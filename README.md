@@ -1,1 +1,1 @@
-# deeplearning
+# DeepLearning GUI Application using dl4j library
