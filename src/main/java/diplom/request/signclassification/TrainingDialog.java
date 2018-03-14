@@ -197,7 +197,7 @@ public class TrainingDialog extends javax.swing.JDialog {
                     DataSetIterator dataIter;
                     recordReader.initialize(files);
 
-                    dataIter = new RecordReaderDataSetIterator(recordReader, 64, 1, cp.size());
+                    dataIter = new RecordReaderDataSetIterator(recordReader, images.size(), 1, cp.size());
                     scaler.fit(dataIter);
 
                     dataIter.setPreProcessor(scaler);
@@ -211,10 +211,22 @@ public class TrainingDialog extends javax.swing.JDialog {
 
                     UIServer uiServer = UIServer.getInstance();
 
+                    for (StatsStorage ss : new ArrayList<>(uiServer.getStatsStorageInstances())) {
+                        try {
+                            if (!ss.isClosed()) {
+                                ss.close();
+                            }
+                            uiServer.disableRemoteListener();
+                            uiServer.detach(ss);
+                            uiServer.enableRemoteListener();
+                        } catch (Exception e) {
+                        }
+                    }
+
                     StatsStorage statsStorage = new InMemoryStatsStorage();
                     uiServer.attach(statsStorage);
                     final long maxIters = Integer.parseInt(iterations.getText()) * epc;
-                    model.setListeners(new StatsListener(statsStorage), new ScoreIterationListener(10), new IterationListener() {
+                    model.setListeners(new StatsListener(statsStorage), new ScoreIterationListener(1), new IterationListener() {
 
                         private boolean invoked = false;
                         private long iterCount = 0;
@@ -246,6 +258,7 @@ public class TrainingDialog extends javax.swing.JDialog {
                     network = model;
                     ((TeacheableMachine) getParent()).setNetwork(network);
 
+//                    uiServer.stop();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

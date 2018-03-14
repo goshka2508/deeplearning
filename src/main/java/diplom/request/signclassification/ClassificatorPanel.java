@@ -48,12 +48,36 @@ public class ClassificatorPanel extends javax.swing.JPanel {
         return samples;
     }
 
-    private void updateImageList() {
-        BufferedImage img = new BufferedImage(256, 64, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D gr = (Graphics2D) img.getGraphics();
+    private void update4Images(Graphics2D gr) {
         for (int i = 0; i < 4 && i < samples.size(); i++) {
             gr.drawImage(samples.get(i), i * 64, 0, i * 64 + 64, 64, 0, 0, samples.get(i).getWidth(), samples.get(i).getWidth(), null);
         }
+    }
+
+    private void update16Images(Graphics2D gr) {
+        for (int i = 0; i < 16 && i < samples.size(); i++) {
+            gr.drawImage(samples.get(i), (i % 8) * 32, (i / 8) * 32, (i % 8) * 32 + 32, (i / 8) * 32 + 32, 0, 0, samples.get(i).getWidth(), samples.get(i).getWidth(), null);
+        }
+    }
+
+    private void update64Images(Graphics2D gr) {
+        for (int i = 0; i < 64 && i < samples.size(); i++) {
+            gr.drawImage(samples.get(i), (i % 16) * 16, (i / 16) * 16, (i % 16) * 16 + 16, (i / 16) * 16 + 16, 0, 0, samples.get(i).getWidth(), samples.get(i).getWidth(), null);
+        }
+    }
+
+    private void updateImageList() {
+        BufferedImage img = new BufferedImage(256, 64, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D gr = (Graphics2D) img.getGraphics();
+
+        if (samples.size() <= 4) {
+            update4Images(gr);
+        } else if (samples.size() <= 16) {
+            update16Images(gr);
+        } else {
+            update64Images(gr);
+        }
+
         ((ImagePanel) samplesImage).setImg(img);
         count.setText(samples.size() + "");
 

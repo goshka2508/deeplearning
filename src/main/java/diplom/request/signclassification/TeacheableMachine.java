@@ -428,11 +428,14 @@ public class TeacheableMachine extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-//        DataTypeUtil.setDTypeForContext(DataBuffer.Type.HALF);
-//        CudaEnvironment.getInstance().getConfiguration()
-//                .allowMultiGPU(true)
-//                .setMaximumDeviceCache(2L * 1024L * 1024L * 1024L)
-//                .allowCrossDeviceAccess(true);
+        DataTypeUtil.setDTypeForContext(DataBuffer.Type.HALF);
+        CudaEnvironment.getInstance().getConfiguration()
+                .allowMultiGPU(true)
+                .setMaximumDeviceCacheableLength(1024 * 1024 * 1024L)
+                .setMaximumDeviceCache(4L * 1024 * 1024 * 1024L)
+                .setMaximumHostCacheableLength(1024 * 1024 * 1024L)
+                .setMaximumHostCache(4L * 1024 * 1024 * 1024L)
+                .allowCrossDeviceAccess(true);
 
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">

@@ -32,15 +32,15 @@ import org.nd4j.linalg.lossfunctions.LossFunctions;
  */
 public class NNUtils {
 
-    public final static int NN_WIDTH = 64;
-    public final static int NN_HEIGHT = 64;
+    public final static int NN_WIDTH = 24;
+    public final static int NN_HEIGHT = 24;
     public final static int NN_CHANNELS = 3;
 
     public static MultiLayerNetwork createNetworkLeNet(int iterations, int outputs) {
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
-                .trainingWorkspaceMode(WorkspaceMode.SINGLE)
-                .inferenceWorkspaceMode(WorkspaceMode.SINGLE)
                 .seed(12312345)
+                .learningRate(0.01)
+//                .regularization(true).l2(0.005)
                 .iterations(iterations)
                 .activation(Activation.IDENTITY)
                 .weightInit(WeightInit.XAVIER)
@@ -50,18 +50,18 @@ public class NNUtils {
                 .list()
                 .layer(0, new ConvolutionLayer.Builder(new int[]{5, 5}, new int[]{1, 1})
                         .name("cnn1")
-                        .nIn(3)
-                        .nOut(10)
+                        .nIn(NN_CHANNELS)
+                        .nOut(16)
                         .activation(Activation.RELU)
                         .build()
                 )
                 .layer(1, new SubsamplingLayer.Builder(SubsamplingLayer.PoolingType.MAX, new int[]{2, 2},
                         new int[]{2, 2}).name("maxpool1").build())
-                .layer(2, new ConvolutionLayer.Builder(new int[]{5, 5}, new int[]{1, 1}).name("cnn2").nOut(25)
+                .layer(2, new ConvolutionLayer.Builder(new int[]{5, 5}, new int[]{1, 1}).name("cnn2").nOut(64)
                         .activation(Activation.RELU).build())
                 .layer(3, new SubsamplingLayer.Builder(SubsamplingLayer.PoolingType.MAX, new int[]{2, 2},
                         new int[]{2, 2}).name("maxpool2").build())
-                .layer(4, new DenseLayer.Builder().name("ffn1").activation(Activation.RELU).nOut(100).build())
+                .layer(4, new DenseLayer.Builder().name("ffn1").activation(Activation.RELU).nOut(128).build())
                 .layer(5, new OutputLayer.Builder(LossFunctions.LossFunction.MCXENT).name("output")
                         .nOut(outputs).activation(Activation.SOFTMAX) // radial basis function required
                         .build())
@@ -90,11 +90,11 @@ public class NNUtils {
                         new int[]{2, 2}).name("cnn1")
                         .cudnnAlgoMode(ConvolutionLayer.AlgoMode.PREFER_FASTEST)
                         .convolutionMode(ConvolutionMode.Truncate)
-                        .nIn(3).nOut(64).build())
+                        .nIn(NN_CHANNELS).nOut(64).build())
                 .layer(1, new SubsamplingLayer.Builder(SubsamplingLayer.PoolingType.MAX, new int[]{3, 3},
                         new int[]{2, 2}, new int[]{1, 1}).convolutionMode(ConvolutionMode.Truncate)
                         .name("maxpool1").build())
-                .layer(2, new ConvolutionLayer.Builder(new int[]{5, 5}, new int[]{2, 2}, new int[]{1, 1}) // TODO: fix input and put stride back to 1,1
+                .layer(2, new ConvolutionLayer.Builder(new int[]{5, 5}, new int[]{2, 2}, new int[]{2, 2}) // TODO: fix input and put stride back to 1,1
                         .convolutionMode(ConvolutionMode.Truncate).name("cnn2")
                         .cudnnAlgoMode(ConvolutionLayer.AlgoMode.PREFER_FASTEST).nOut(192)
                         .biasInit(nonZeroBias).build())
@@ -110,7 +110,7 @@ public class NNUtils {
                         .name("cnn5").cudnnAlgoMode(ConvolutionLayer.AlgoMode.PREFER_FASTEST).nOut(256)
                         .biasInit(nonZeroBias).build())
                 .layer(7, new SubsamplingLayer.Builder(SubsamplingLayer.PoolingType.MAX, new int[]{3, 3},
-                        new int[]{2, 2}) // TODO: fix input and put stride back to 2,2
+                        new int[]{7, 7}) // TODO: fix input and put stride back to 2,2
                         .name("maxpool3").build())
                 .layer(8, new DenseLayer.Builder().name("ffn1").nIn(256).nOut(4096)
                         .dist(new GaussianDistribution(0, 0.005)).biasInit(nonZeroBias).dropOut(dropOut)
