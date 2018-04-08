@@ -32,14 +32,14 @@ import org.nd4j.linalg.lossfunctions.LossFunctions;
  */
 public class NNUtils {
 
-    public final static int NN_WIDTH = 24;
-    public final static int NN_HEIGHT = 24;
+    public final static int NN_WIDTH = 128;
+    public final static int NN_HEIGHT = 128;
     public final static int NN_CHANNELS = 3;
 
     public static MultiLayerNetwork createNetworkLeNet(int iterations, int outputs) {
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 .seed(12312345)
-                .learningRate(0.01)
+                .learningRate(0.0001)
 //                .regularization(true).l2(0.005)
                 .iterations(iterations)
                 .activation(Activation.IDENTITY)
@@ -57,11 +57,11 @@ public class NNUtils {
                 )
                 .layer(1, new SubsamplingLayer.Builder(SubsamplingLayer.PoolingType.MAX, new int[]{2, 2},
                         new int[]{2, 2}).name("maxpool1").build())
-                .layer(2, new ConvolutionLayer.Builder(new int[]{5, 5}, new int[]{1, 1}).name("cnn2").nOut(64)
+                .layer(2, new ConvolutionLayer.Builder(new int[]{7, 7}, new int[]{1, 1}).name("cnn2").nOut(64)
                         .activation(Activation.RELU).build())
                 .layer(3, new SubsamplingLayer.Builder(SubsamplingLayer.PoolingType.MAX, new int[]{2, 2},
                         new int[]{2, 2}).name("maxpool2").build())
-                .layer(4, new DenseLayer.Builder().name("ffn1").activation(Activation.RELU).nOut(128).build())
+                .layer(4, new DenseLayer.Builder().name("ffn1").activation(Activation.RELU).nOut(256).build())
                 .layer(5, new OutputLayer.Builder(LossFunctions.LossFunction.MCXENT).name("output")
                         .nOut(outputs).activation(Activation.SOFTMAX) // radial basis function required
                         .build())

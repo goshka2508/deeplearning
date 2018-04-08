@@ -11,9 +11,25 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <nd4j.version>0.9.1</nd4j.version>
         <dl4j.version>0.9.1</dl4j.version>
-        <!-- nd4j.backend>nd4j-native-platform</nd4j.backend -->
-        <nd4j.backend>nd4j-cuda-8.0-platform</nd4j.backend>
     </properties>
+    
+    <profiles>
+        <profile>
+            <id>CUDA</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <nd4j.backend>nd4j-cuda-8.0-platform</nd4j.backend>
+            </properties>
+        </profile>
+        <profile>
+            <id>OPENCL</id>
+            <properties>
+                <nd4j.backend>nd4j-native-platform</nd4j.backend>
+            </properties>
+        </profile>
+    </profiles>
     
     <dependencyManagement>
         <dependencies>

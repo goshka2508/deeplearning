@@ -130,7 +130,7 @@ public class DataPrepare {
         return ret;
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main__(String[] args) throws Exception {
         Map<String, List<File>> files = getFiles("H:\\JAVA\\GTSRB\\Final_Training\\Images");
 
         ZipOutputStream zos = new ZipOutputStream(new FileOutputStream("signs.nnb"));
