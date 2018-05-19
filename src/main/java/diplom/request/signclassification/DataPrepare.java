@@ -64,10 +64,9 @@ public class DataPrepare {
                 h = b - t;
 
 //                System.out.println(w + "x" + h);
-//                if (w < 32 || h < 32) {
-//                    continue;
-//                }
-
+                if (w < 32 || h < 32) {
+                    continue;
+                }
                 if (w != h) {
                     continue;
                 }
@@ -130,14 +129,17 @@ public class DataPrepare {
         return ret;
     }
 
-    public static void main__(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
         Map<String, List<File>> files = getFiles("H:\\JAVA\\GTSRB\\Final_Training\\Images");
 
-        ZipOutputStream zos = new ZipOutputStream(new FileOutputStream("signs.nnb"));
+        ZipOutputStream zos = new ZipOutputStream(new FileOutputStream("signs_max.nnb"));
 
         for (String key : files.keySet()) {
             if (files.get(key).size() < 16) {
                 continue;
+            }
+            while (files.get(key).size() > 16) {
+                files.get(key).remove(files.get(key).size() - 1);
             }
             int id = 0;
             for (File f : files.get(key)) {

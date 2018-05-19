@@ -273,7 +273,10 @@ public class TeacheableMachine extends javax.swing.JFrame {
                 DataNormalization scaler = new ImagePreProcessingScaler(0, 1, 8);
                 while (testingEnabled) {
                     try {
-                        INDArray image = loader.asMatrix(((ImagePanel) camera).getImg());
+                        BufferedImage img = ((ImagePanel) camera).getImg();
+                        BufferedImage gg = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+                        gg.getGraphics().drawImage(img, 0, 0, null);
+                        INDArray image = loader.asMatrix(gg);
                         scaler.transform(image);
                         INDArray predictions = network.output(image);
 //                        for (ClassificatorPanel cp : cls) {

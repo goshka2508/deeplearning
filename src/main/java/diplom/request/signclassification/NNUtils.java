@@ -32,15 +32,15 @@ import org.nd4j.linalg.lossfunctions.LossFunctions;
  */
 public class NNUtils {
 
-    public final static int NN_WIDTH = 128;
-    public final static int NN_HEIGHT = 128;
-    public final static int NN_CHANNELS = 3;
+    public final static int NN_WIDTH = 48;
+    public final static int NN_HEIGHT = 48;
+    public final static int NN_CHANNELS = 1;
 
     public static MultiLayerNetwork createNetworkLeNet(int iterations, int outputs) {
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 .seed(12312345)
-                .learningRate(0.0001)
-//                .regularization(true).l2(0.005)
+                .learningRate(0.000001)
+                //                                .regularization(true).l2(0.00005)
                 .iterations(iterations)
                 .activation(Activation.IDENTITY)
                 .weightInit(WeightInit.XAVIER)
@@ -51,17 +51,17 @@ public class NNUtils {
                 .layer(0, new ConvolutionLayer.Builder(new int[]{5, 5}, new int[]{1, 1})
                         .name("cnn1")
                         .nIn(NN_CHANNELS)
-                        .nOut(16)
+                        .nOut(32)
                         .activation(Activation.RELU)
                         .build()
                 )
                 .layer(1, new SubsamplingLayer.Builder(SubsamplingLayer.PoolingType.MAX, new int[]{2, 2},
                         new int[]{2, 2}).name("maxpool1").build())
-                .layer(2, new ConvolutionLayer.Builder(new int[]{7, 7}, new int[]{1, 1}).name("cnn2").nOut(64)
+                .layer(2, new ConvolutionLayer.Builder(new int[]{5, 5}, new int[]{1, 1}).name("cnn2").nOut(128)
                         .activation(Activation.RELU).build())
                 .layer(3, new SubsamplingLayer.Builder(SubsamplingLayer.PoolingType.MAX, new int[]{2, 2},
                         new int[]{2, 2}).name("maxpool2").build())
-                .layer(4, new DenseLayer.Builder().name("ffn1").activation(Activation.RELU).nOut(256).build())
+                .layer(4, new DenseLayer.Builder().name("ffn1").activation(Activation.RELU).nOut(1024).build())
                 .layer(5, new OutputLayer.Builder(LossFunctions.LossFunction.MCXENT).name("output")
                         .nOut(outputs).activation(Activation.SOFTMAX) // radial basis function required
                         .build())
@@ -132,16 +132,16 @@ public class NNUtils {
                 .seed(seed)
                 .iterations(iterations)
                 .regularization(true).l2(0.005)
-                .learningRate(0.001)
+                .learningRate(0.0001)
                 .weightInit(WeightInit.XAVIER)
-                //.activation(Activation.RELU)
+                .activation(Activation.RELU)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
                 .updater(Updater.NESTEROVS)
                 .list()
                 .layer(0, new ConvolutionLayer.Builder(5, 5)
-                        .nIn(3)
+                        .nIn(NN_CHANNELS)
                         .stride(1, 1)
-                        .nOut(8)
+                        .nOut(32)
                         .biasInit(0)
                         .activation(Activation.IDENTITY)
                         .build()
@@ -153,7 +153,7 @@ public class NNUtils {
                 )
                 .layer(2, new ConvolutionLayer.Builder(5, 5)
                         .stride(1, 1)
-                        .nOut(16)
+                        .nOut(64)
                         .biasInit(0)
                         .activation(Activation.IDENTITY)
                         .build()
@@ -165,7 +165,7 @@ public class NNUtils {
                 )
                 .layer(4, new ConvolutionLayer.Builder(5, 5)
                         .stride(1, 1)
-                        .nOut(64)
+                        .nOut(256)
                         .biasInit(0)
                         .activation(Activation.IDENTITY)
                         .build()
@@ -176,7 +176,7 @@ public class NNUtils {
                 )
                 .layer(6, new DenseLayer.Builder()
                         .activation(Activation.IDENTITY)
-                        .nOut(500)
+                        .nOut(1024)
                         .build()
                 )
                 .layer(7, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)

@@ -6,6 +6,7 @@
 package diplom.request.signclassification;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.RescaleOp;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
@@ -27,8 +28,6 @@ import org.deeplearning4j.ui.storage.InMemoryStatsStorage;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.dataset.api.preprocessor.DataNormalization;
 import org.nd4j.linalg.dataset.api.preprocessor.ImagePreProcessingScaler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -179,6 +178,12 @@ public class TrainingDialog extends javax.swing.JDialog {
                     int id = 1;
                     for (BufferedImage bi : c.getSamples()) {
                         try {
+
+                            BufferedImage img = new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+                            img.getGraphics().drawImage(img, 0, 0, null);
+//                            RescaleOp op = new RescaleOp(1.2f, 15, null);
+//                            bi = op.filter(bi, bi);
+
                             File im = new File(sub, id + ".png");
                             ImageIO.write(bi, "png", im);
                             images.add(im.toURI());
