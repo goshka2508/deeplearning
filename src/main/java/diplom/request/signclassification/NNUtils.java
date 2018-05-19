@@ -32,8 +32,8 @@ import org.nd4j.linalg.lossfunctions.LossFunctions;
  */
 public class NNUtils {
 
-    public final static int NN_WIDTH = 48;
-    public final static int NN_HEIGHT = 48;
+    public final static int NN_WIDTH = 32;
+    public final static int NN_HEIGHT = 32;
     public final static int NN_CHANNELS = 1;
 
     public static MultiLayerNetwork createNetworkLeNet(int iterations, int outputs) {
