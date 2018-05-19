@@ -180,12 +180,13 @@ public class TrainingDialog extends javax.swing.JDialog {
                         try {
 
                             BufferedImage img = new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
-                            img.getGraphics().drawImage(img, 0, 0, null);
-//                            RescaleOp op = new RescaleOp(1.2f, 15, null);
-//                            bi = op.filter(bi, bi);
+                            img.getGraphics().drawImage(bi, 0, 0, null);
+
+                            RescaleOp rescaleOp = new RescaleOp(1.5f, 15, null);
+                            rescaleOp.filter(img, img);
 
                             File im = new File(sub, id + ".png");
-                            ImageIO.write(bi, "png", im);
+                            ImageIO.write(img, "png", im);
                             images.add(im.toURI());
                             id++;
                         } catch (Exception e) {
@@ -208,7 +209,7 @@ public class TrainingDialog extends javax.swing.JDialog {
                     dataIter.setPreProcessor(scaler);
                     MultiLayerNetwork model;
                     if (network == null) {
-                        model = NNUtils.createNetworkLeNet(Integer.parseInt(iterations.getText()), ((TeacheableMachine) getParent()).getCls().size());
+                        model = NNUtils.createNetworkLeNetFast(Integer.parseInt(iterations.getText()), ((TeacheableMachine) getParent()).getCls().size());
                         model.init();
                     } else {
                         model = network;

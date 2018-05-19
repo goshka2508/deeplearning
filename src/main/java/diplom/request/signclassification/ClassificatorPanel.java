@@ -219,6 +219,7 @@ public class ClassificatorPanel extends javax.swing.JPanel {
                     adding = true;
                     while (addSamples) {
                         BufferedImage img = ip.getImg();
+
                         addSample(img);
                         LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(100));
                     }

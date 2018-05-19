@@ -9,6 +9,7 @@ import com.github.sarxos.webcam.Webcam;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.RescaleOp;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -32,7 +33,7 @@ import org.datavec.image.loader.NativeImageLoader;
 import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.util.ModelSerializer;
-import org.nd4j.jita.conf.CudaEnvironment;
+//import org.nd4j.jita.conf.CudaEnvironment;
 import org.nd4j.linalg.api.buffer.DataBuffer;
 import org.nd4j.linalg.api.buffer.util.DataTypeUtil;
 import org.nd4j.linalg.api.ndarray.INDArray;
@@ -275,6 +276,10 @@ public class TeacheableMachine extends javax.swing.JFrame {
                     try {
                         BufferedImage img = ((ImagePanel) camera).getImg();
                         BufferedImage gg = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+                        
+                        RescaleOp rescaleOp = new RescaleOp(1.5f, 15, null);
+                        rescaleOp.filter(gg, gg);
+                        
                         gg.getGraphics().drawImage(img, 0, 0, null);
                         INDArray image = loader.asMatrix(gg);
                         scaler.transform(image);
@@ -360,7 +365,7 @@ public class TeacheableMachine extends javax.swing.JFrame {
                 }
 
                 zos.close();
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
             }
         }
@@ -431,14 +436,14 @@ public class TeacheableMachine extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        DataTypeUtil.setDTypeForContext(DataBuffer.Type.HALF);
-        CudaEnvironment.getInstance().getConfiguration()
-                .allowMultiGPU(true)
-                .setMaximumDeviceCacheableLength(1024 * 1024 * 1024L)
-                .setMaximumDeviceCache(4L * 1024 * 1024 * 1024L)
-                .setMaximumHostCacheableLength(1024 * 1024 * 1024L)
-                .setMaximumHostCache(4L * 1024 * 1024 * 1024L)
-                .allowCrossDeviceAccess(true);
+//        DataTypeUtil.setDTypeForContext(DataBuffer.Type.HALF);
+//        CudaEnvironment.getInstance().getConfiguration()
+//                .allowMultiGPU(true)
+//                .setMaximumDeviceCacheableLength(1024 * 1024 * 1024L)
+//                .setMaximumDeviceCache(4L * 1024 * 1024 * 1024L)
+//                .setMaximumHostCacheableLength(1024 * 1024 * 1024L)
+//                .setMaximumHostCache(4L * 1024 * 1024 * 1024L)
+//                .allowCrossDeviceAccess(true);
 
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -499,7 +504,9 @@ public class TeacheableMachine extends javax.swing.JFrame {
                         BufferedImage im = webcam.getImage();
                         im = im.getSubimage((im.getWidth() - im.getHeight()) / 2, 0, im.getHeight(), im.getHeight());
                         ((Graphics2D) img.getGraphics()).drawImage(im, 0, 0, img.getHeight(), img.getWidth(), 0, 0, im.getHeight(), im.getWidth(), null);
-
+                        
+                        
+                        
                         ((ImagePanel) camera).setImg(img);
 
                         SwingUtilities.invokeAndWait(new Runnable() {
