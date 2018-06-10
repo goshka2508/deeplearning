@@ -167,6 +167,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="&#x421;&#x431;&#x440;&#x43e;&#x441;&#x438;&#x442;&#x44c; &#x43f;&#x430;&#x440;&#x430;&#x43c;&#x435;&#x442;&#x440;&#x44b; &#x43d;&#x435;&#x439;&#x440;&#x43e;&#x43d;&#x43d;&#x43e;&#x439; &#x441;&#x435;&#x442;&#x438;"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="clearNetworkActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="trainNetwork">
           <Properties>

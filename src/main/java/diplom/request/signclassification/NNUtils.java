@@ -123,9 +123,9 @@ public class NNUtils {
                 .list().layer(0,
                         new ConvolutionLayer.Builder(new int[]{11, 11}, new int[]{4, 4},
                         new int[]{2, 2}).name("cnn1")
-                        .cudnnAlgoMode(ConvolutionLayer.AlgoMode.PREFER_FASTEST)
-                        .convolutionMode(ConvolutionMode.Truncate)
-                        .nIn(NN_CHANNELS).nOut(64).build())
+                                .cudnnAlgoMode(ConvolutionLayer.AlgoMode.PREFER_FASTEST)
+                                .convolutionMode(ConvolutionMode.Truncate)
+                                .nIn(NN_CHANNELS).nOut(64).build())
                 .layer(1, new SubsamplingLayer.Builder(SubsamplingLayer.PoolingType.MAX, new int[]{3, 3},
                         new int[]{2, 2}, new int[]{1, 1}).convolutionMode(ConvolutionMode.Truncate)
                         .name("maxpool1").build())

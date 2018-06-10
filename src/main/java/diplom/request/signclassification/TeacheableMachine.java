@@ -124,6 +124,11 @@ public class TeacheableMachine extends javax.swing.JFrame {
         });
 
         clearNetwork.setText("Сбросить параметры нейронной сети");
+        clearNetwork.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearNetworkActionPerformed(evt);
+            }
+        });
 
         trainNetwork.setText("Обучить сеть");
         trainNetwork.addActionListener(new java.awt.event.ActionListener() {
@@ -276,10 +281,10 @@ public class TeacheableMachine extends javax.swing.JFrame {
                     try {
                         BufferedImage img = ((ImagePanel) camera).getImg();
                         BufferedImage gg = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
-                        
+
                         RescaleOp rescaleOp = new RescaleOp(1.5f, 15, null);
                         rescaleOp.filter(gg, gg);
-                        
+
                         gg.getGraphics().drawImage(img, 0, 0, null);
                         INDArray image = loader.asMatrix(gg);
                         scaler.transform(image);
@@ -380,10 +385,14 @@ public class TeacheableMachine extends javax.swing.JFrame {
         int returnVal = fc.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
 
-            for (ClassificatorPanel cp : cls) {
+            cls.forEach((cp) -> {
                 fp.remove(cp);
-            }
+            });
             cls.clear();
+            if (network != null) {
+                network.clear();
+                network.clearLayerMaskArrays();
+            }
             network = null;
 
             File f = fc.getSelectedFile();
@@ -431,6 +440,25 @@ public class TeacheableMachine extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_readNetworkActionPerformed
+
+    private void clearNetworkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearNetworkActionPerformed
+        if (network != null) {
+            network.clear();
+            network.clearLayerMaskArrays();
+        }
+        network = null;
+
+        cls.stream().map((cp) -> {
+            cp.getSamples().clear();
+            return cp;
+        }).forEachOrdered((cp) -> {
+            fp.remove(cp);
+        });
+
+        cls.clear();
+        
+        fp.updateUI();
+    }//GEN-LAST:event_clearNetworkActionPerformed
 
     /**
      * @param args the command line arguments
@@ -504,9 +532,7 @@ public class TeacheableMachine extends javax.swing.JFrame {
                         BufferedImage im = webcam.getImage();
                         im = im.getSubimage((im.getWidth() - im.getHeight()) / 2, 0, im.getHeight(), im.getHeight());
                         ((Graphics2D) img.getGraphics()).drawImage(im, 0, 0, img.getHeight(), img.getWidth(), 0, 0, im.getHeight(), im.getWidth(), null);
-                        
-                        
-                        
+
                         ((ImagePanel) camera).setImg(img);
 
                         SwingUtilities.invokeAndWait(new Runnable() {
